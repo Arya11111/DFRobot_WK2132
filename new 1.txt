@@ -1,0 +1,29 @@
+if(pBuf == NULL){
+    DBG("pBuf ERROR!! : null pointer");
+  }DBG();
+  uint8_t * _pBuf = (uint8_t *)pBuf;DBG();
+  _pWire->beginTransmission(0x70);DBG();
+  uint8_t buf[3];
+  buf[0] = reg;
+  buf[1] = 0xFE;
+  _pWire->write(buf, 2);DBG();
+  if( _pWire->endTransmission() != 0){DBG();
+      return 0;
+  }DBG();
+  _pWire->beginTransmission(0x70);
+  _pWire->write(&reg, 1);
+  _pWire->endTransmission();
+ // _pWire->write(&_addr, 1);
+  _pWire->requestFrom(_addr, (uint8_t) size);DBG();
+  for(uint16_t i = 0; i < size; i++){DBG();
+    _pBuf[i] = _pWire->read();DBG(_pBuf[i], HEX);
+  }DBG();
+  _pWire->endTransmission();DBG();
+  return size;
+  
+  
+掉电：寄存器的值不会丢失
+
+复位引脚复位：寄存器的值会恢复默认值
+1.如何确定FIFO的数据是否为空
+2.读取FIFO的数据，先判断FIFO中是否有数据
